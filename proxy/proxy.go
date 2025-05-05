@@ -1,8 +1,6 @@
 package proxy
 
 import (
-	// "context"
-	// "errors"
 	"fmt"
 	"io"
 	"log"
@@ -157,25 +155,21 @@ func (p *ProxyHandler) isAllowedProtocol(scheme string) bool {
 // extractFilename 从路径中提取文件名
 func (p *ProxyHandler) extractFilename(path string) string {
 	// 从路径中提取文件名
-	log.Printf("提取文件名的原始路径: %s", path)
 	parts := strings.Split(path, "/")
 	if len(parts) > 0 {
 		filename := parts[len(parts)-1]
-		log.Printf("分割路径后的最后部分: %s", filename)
 		if filename != "" {
 			// 处理可能包含查询参数的情况
 			queryIndex := strings.Index(filename, "?")
 			if queryIndex > 0 {
 				filename = filename[:queryIndex]
-				log.Printf("移除查询参数后: %s", filename)
 			}
 
 			// 处理 URL 编码
 			if decodedFilename, err := url.QueryUnescape(filename); err == nil {
-				log.Printf("URL解码前: %s, 解码后: %s", filename, decodedFilename)
 				filename = decodedFilename
 			} else {
-				log.Printf("URL解码失败: %v", err)
+				log.Printf("URL解码失败: %v", err) // 保留错误日志
 			}
 
 			return filename
@@ -183,29 +177,23 @@ func (p *ProxyHandler) extractFilename(path string) string {
 	}
 
 	// 如果无法从路径中提取文件名，则返回默认文件名
-	log.Printf("无法从路径提取文件名，使用默认名称: download")
 	return "download"
 }
 
 // 新增函数：从 Content-Disposition 头中提取文件名
 func (p *ProxyHandler) extractFilenameFromHeader(header string) string {
-	log.Printf("解析Content-Disposition头: %s", header)
 	if strings.Contains(header, "filename=") {
 		parts := strings.Split(header, "filename=")
 		if len(parts) > 1 {
 			filename := parts[1]
-			log.Printf("分割后的文件名部分: %s", filename)
 			// 处理引号
 			filename = strings.Trim(filename, `"'`)
-			log.Printf("移除引号后: %s", filename)
 			// 处理可能的额外参数
 			if idx := strings.Index(filename, ";"); idx > 0 {
 				filename = filename[:idx]
-				log.Printf("移除额外参数后: %s", filename)
 			}
 			return filename
 		}
 	}
-	log.Printf("无法从Content-Disposition头提取文件名")
 	return ""
 }
