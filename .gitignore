@@ -1,0 +1,21 @@
+# 编译输出
+/build/
+/downproxy
+
+# IDE 文件
+.idea/
+.vscode/
+
+# 依赖
+/vendor/
+
+# 系统文件
+.DS_Store
+*.swp
+*.swo
+
+# 日志文件
+*.log
+
+# 环境变量文件
+.env

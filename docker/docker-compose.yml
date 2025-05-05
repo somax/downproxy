@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  downproxy:
+    build: .
+    ports:
+      - "9527:9527"
+    restart: unless-stopped
